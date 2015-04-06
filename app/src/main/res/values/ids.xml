@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="service_start" type="id">service_start</item>
+    <item name="service_end" type="id">service_end</item>
+</resources>
