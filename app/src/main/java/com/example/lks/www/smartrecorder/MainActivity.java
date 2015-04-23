@@ -1,205 +1,82 @@
 package com.example.lks.www.smartrecorder;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.media.MediaRecorder;
-import android.os.Environment;
+import java.util.Locale;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.lks.www.smartrecorder.R;
 
-import java.io.File;
-import java.io.IOException;
+public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
-public class MainActivity extends ActionBarActivity  implements View.OnClickListener {
-
-
-    private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
-    private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
-    private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
-
-    private MediaRecorder recorder = null;
-    private int currentFormat = 0;
-    private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4,
-            MediaRecorder.OutputFormat.THREE_GPP };
-    private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4,
-            AUDIO_RECORDER_FILE_EXT_3GP };
-
-
-    Intent recordServiceIntent;
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
-        setButtonHandlers();
-        enableButtons(false);
-        setFormatButtonCaption();
+        // Set up the action bar.
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        /*
-        Button service_start = (Button)findViewById(R.id.service_start);
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        Button service_end = (Button)findViewById(R.id.service_end);
-        service_start.setOnClickListener(this);
-        service_end.setOnClickListener(this);
-        */
-    }
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-
-    private void setButtonHandlers() {
-        ((Button) findViewById(R.id.btnStart)).setOnClickListener(btnClick);
-        ((Button) findViewById(R.id.btnStop)).setOnClickListener(btnClick);
-        ((Button) findViewById(R.id.btnFormat)).setOnClickListener(btnClick);
-    }
-
-    private void enableButton(int id, boolean isEnable) {
-        ((Button) findViewById(id)).setEnabled(isEnable);
-    }
-
-    private void enableButtons(boolean isRecording) {
-        enableButton(R.id.btnStart, !isRecording);
-        enableButton(R.id.btnFormat, !isRecording);
-        enableButton(R.id.btnStop, isRecording);
-    }
-
-    private void setFormatButtonCaption() {
-        ((Button) findViewById(R.id.btnFormat))
-                .setText(getString(R.string.audio_format) + " ("
-                        + file_exts[currentFormat] + ")");
-    }
-
-    private String getFilename() {
-        String filepath = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(filepath, AUDIO_RECORDER_FOLDER);
-
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-
-        return (file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat]);
-    }
-
-    private void startRecording() {
-        recorder = new MediaRecorder();
-
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        //recorder.setOutputFormat(output_formats[currentFormat]);
-        //recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(getFilename());
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
-        recorder.setOnErrorListener(errorListener);
-        recorder.setOnInfoListener(infoListener);
-
-        try {
-            recorder.prepare();
-            recorder.start();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stopRecording() {
-        if (null != recorder) {
-            recorder.stop();
-            recorder.reset();
-            recorder.release();
-
-            recorder = null;
-        }
-    }
-
-    private void displayFormatDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String formats[] = { "MPEG 4", "3GPP" };
-
-        builder.setTitle(getString(R.string.choose_format_title))
-                .setSingleChoiceItems(formats, currentFormat,
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                currentFormat = which;
-                                setFormatButtonCaption();
-
-                                dialog.dismiss();
-                            }
-                        }).show();
-    }
-
-    private MediaRecorder.OnErrorListener errorListener = new MediaRecorder.OnErrorListener() {
-        @Override
-        public void onError(MediaRecorder mr, int what, int extra) {
-            Toast.makeText(MainActivity.this,
-                    "Error: " + what + ", " + extra, Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    private MediaRecorder.OnInfoListener infoListener = new MediaRecorder.OnInfoListener() {
-        @Override
-        public void onInfo(MediaRecorder mr, int what, int extra) {
-            Toast.makeText(MainActivity.this,
-                    "Warning: " + what + ", " + extra, Toast.LENGTH_SHORT)
-                    .show();
-        }
-    };
-
-    private View.OnClickListener btnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.btnStart: {
-                    Toast.makeText(MainActivity.this, "Start Recording",
-                            Toast.LENGTH_SHORT).show();
-
-                    enableButtons(true);
-                    startRecording();
-
-                    break;
-                }
-                case R.id.btnStop: {
-                    Toast.makeText(MainActivity.this, "Stop Recording",
-                            Toast.LENGTH_SHORT).show();
-                    enableButtons(false);
-                    stopRecording();
-
-                    break;
-                }
-                case R.id.btnFormat: {
-                    displayFormatDialog();
-
-                    break;
-                }
+        // When swiping between different sections, select the corresponding
+        // tab. We can also use ActionBar.Tab#select() to do this if we have
+        // a reference to the Tab.
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                actionBar.setSelectedNavigationItem(position);
             }
-        }
-    };
+        });
 
-
-    public void onClick(View v) {
-        if(v.getId() == R.id.service_start){
-            startService(new Intent(this, RecordService.class));
-        }else if(v.getId() == R.id.service_end){
-            stopService(new Intent(this, RecordService.class));
+        // For each of the sections in the app, add a tab to the action bar.
+        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+            // Create a tab with text corresponding to the page title defined by
+            // the adapter. Also specify this Activity object, which implements
+            // the TabListener interface, as the callback (listener) for when
+            // this tab is selected.
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(mSectionsPagerAdapter.getPageTitle(i))
+                            .setTabListener(this));
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -223,10 +100,80 @@ public class MainActivity extends ActionBarActivity  implements View.OnClickList
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in
+        // the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            Locale l = Locale.getDefault();
+            switch (position) {
+                case 0:
+                    return getString(R.string.title_section1).toUpperCase(l);
+                case 1:
+                    return getString(R.string.title_section2).toUpperCase(l);
+                case 2:
+                    return getString(R.string.title_section3).toUpperCase(l);
+            }
+            return null;
+        }
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
 
         public PlaceholderFragment() {
         }
@@ -234,8 +181,9 @@ public class MainActivity extends ActionBarActivity  implements View.OnClickList
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_main2, container, false);
             return rootView;
         }
     }
+
 }
