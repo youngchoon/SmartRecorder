@@ -5,9 +5,15 @@
     tools:context="com.example.lks.www.smartrecorder.RecordFileListFragment">
 
     <ListView android:id="@android:id/list" android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="479dp" />
 
-    <TextView android:id="@android:id/empty" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:gravity="center" />
-
+    <SeekBar
+        android:id="@+id/activity_audio_file_list_pb"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/activity_audio_file_list_tv_remaining"
+        android:layout_toRightOf="@+id/activity_audio_file_list_tv_progress"
+        android:layout_gravity="bottom" />
 </FrameLayout>

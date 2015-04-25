@@ -5,18 +5,30 @@
     android:layout_height="fill_parent"
     android:padding="20dip">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/format_info"
+        android:layout_weight="0.10"
+        android:textSize="20dip"
+        android:gravity="center_horizontal" />
+
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_launcher"
+        android:layout_weight="0.8"
         android:scaleType="fitCenter"/>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_info"
-        android:layout_weight="1.0"
+        android:text="10:02"
+        android:layout_weight="0.05"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="bottom|center"
         android:textSize="20dip"/>
+
 
     <LinearLayout
         android:orientation="horizontal"
