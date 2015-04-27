@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<string-array name="userNameOpen">
+    <item>항상 공개</item>
+    <item>친구에게만</item>
+    <item>비공개</item>
+</string-array>
