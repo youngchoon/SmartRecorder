@@ -8,10 +8,10 @@
 
     <header
         android:fragment="com.example.lks.www.smartrecorder.SettingsActivity$NotificationPreferenceFragment"
-        android:title="@string/pref_header_notifications" />
+        android:title="@string/pref_header_cloud" />
 
     <header
         android:fragment="com.example.lks.www.smartrecorder.SettingsActivity$DataSyncPreferenceFragment"
-        android:title="@string/pref_header_data_sync" />
+        android:title="@string/pref_header_etc" />
 
 </preference-headers>
