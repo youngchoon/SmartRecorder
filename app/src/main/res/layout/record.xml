@@ -12,13 +12,19 @@
         android:layout_weight="0.10"
         android:textSize="20dip"
         android:gravity="center_horizontal" />
-
+<!--
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_launcher"
         android:layout_weight="0.8"
         android:scaleType="fitCenter"/>
+-->
+    <com.example.lks.www.smartrecorder.RotaryKnobView
+        android:id="@+id/jogview"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center" />
 
     <TextView
         android:layout_width="fill_parent"
