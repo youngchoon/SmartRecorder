@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity {
     private FragmentTabHost mTabHost;
-    private RotaryKnobView jogView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,18 +26,6 @@ public class MainActivity extends FragmentActivity {
                 mTabHost.newTabSpec("tab2").setIndicator(getString(R.string.menu_recorded_file), null),
                 RecordFileListFragment.class, null);
 
-        RotaryKnobView jogView = (RotaryKnobView)findViewById(R.id.jogview);
-       /* jogView.setKnobListener(new RotaryKnobView.RotaryKnobListener()
-        {
-            @Override
-            public void onKnobChanged(int arg)
-            {
-                if (arg > 0)
-                     // rotate right
-                else
-                     // rotate left
-            }
-        });*/
     }
 
 

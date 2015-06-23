@@ -31,7 +31,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
     private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4,
             AUDIO_RECORDER_FILE_EXT_3GP };
 
-
+    private RotaryKnobView jogView;
     Intent recordServiceIntent;
 
     @Override
@@ -45,6 +45,17 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         View v = inflater.inflate((R.layout.record), container, false);
+        jogView = (RotaryKnobView)v.findViewById(R.id.jogview);
+        jogView.setKnobListener(new RotaryKnobView.RotaryKnobListener()
+        {
+            public void onKnobChanged(int arg)
+            {
+                if (arg > 0)
+                    ;     // rotate right
+                else
+                    ;     // rotate left
+            }
+        });
 
         /*
         Button service_start = (Button)findViewById(R.id.service_start);
