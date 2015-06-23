@@ -1,11 +1,8 @@
 package com.example.lks.www.smartrecorder;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,23 +10,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 
 
 public class RecordFragment extends Fragment implements View.OnClickListener {
 
 
-    private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
-    private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
-    private static final String AUDIO_RECORDER_FOLDER = "SmartRecorder";
 
     private MediaRecorder recorder = null;
-    private int currentFormat = 0;
     private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4,
             MediaRecorder.OutputFormat.THREE_GPP };
-    private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4,
-            AUDIO_RECORDER_FILE_EXT_3GP };
 
     private RotaryKnobView jogView;
     Intent recordServiceIntent;
@@ -91,24 +81,13 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         enableButton(R.id.btnStop, isRecording);
     }
 
-    private String getFilename() {
-        String filepath = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(filepath, AUDIO_RECORDER_FOLDER);
-
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-
-        return (file.getAbsolutePath() + "/" + System.currentTimeMillis() + file_exts[currentFormat]);
-    }
-
     private void startRecording() {
         recorder = new MediaRecorder();
 
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         //recorder.setOutputFormat(output_formats[currentFormat]);
         //recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(getFilename());
+        //recorder.setOutputFile(getFilename());
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
@@ -133,25 +112,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
             recorder = null;
         }
-    }
-
-    private void displayFormatDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        String formats[] = { "MPEG 4", "3GPP" };
-
-        builder.setTitle(getString(R.string.choose_format_title))
-                .setSingleChoiceItems(formats, currentFormat,
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                currentFormat = which;
-
-
-                                dialog.dismiss();
-                            }
-                        }).show();
     }
 
     private MediaRecorder.OnErrorListener errorListener = new MediaRecorder.OnErrorListener() {
@@ -180,15 +140,16 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                             Toast.LENGTH_SHORT).show();
 
                     enableButtons(true);
-                    startRecording();
-
+                    //startRecording();
+                    getActivity().startService(new Intent(getActivity(), RecordService.class));
                     break;
                 }
                 case R.id.btnStop: {
                     Toast.makeText(getActivity(), "Stop Recording",
                             Toast.LENGTH_SHORT).show();
                     enableButtons(false);
-                    stopRecording();
+                    //stopRecording();
+                    getActivity().stopService(new Intent(getActivity(), RecordService.class));
 
                     break;
                 }
