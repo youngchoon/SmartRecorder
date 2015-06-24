@@ -5,14 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +24,13 @@ import android.widget.Toast;
 
 import com.example.lks.www.smartrecorder.dummy.DummyContent;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -46,6 +47,7 @@ public class RecordFileListFragment extends ListFragment implements AbsListView.
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "RecordFileListFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -98,7 +100,7 @@ public class RecordFileListFragment extends ListFragment implements AbsListView.
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // TODO: Change Adapter to display your content
+       // TODO: Change Adapter to display your content
         mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
     }
@@ -118,9 +120,9 @@ public class RecordFileListFragment extends ListFragment implements AbsListView.
         mListView.setOnItemClickListener(this);
 
 
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            audioFileList = new ArrayList<RecordDataModel>();
+//        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+        if(android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+            audioFileList = new ArrayList<>();
             setAdapterForAudios();
 
         } else {
@@ -222,33 +224,39 @@ public class RecordFileListFragment extends ListFragment implements AbsListView.
      * Set adapter for audio file in list and play
      */
     private void setAdapterForAudios() {
-
-        // fetch data for audio files available in sd card
-//		Cursor mCursor = managedQuery(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media._ID,
-//				MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.SIZE }, AudioColumns.IS_MUSIC + "!=0", null, "LOWER(" + MediaStore.Audio.Media.TITLE + ") ASC");
-
-
-        CursorLoader cursorLoader=new CursorLoader(getActivity(), MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.SIZE }, MediaStore.Audio.AudioColumns.IS_MUSIC + "!=0", null, null);
-        Cursor mCursor=cursorLoader.loadInBackground();
-
-        // set data in model
-        RecordDataModel recordDataModel;
-
-        while (mCursor.moveToNext()) {
-
-
-            recordDataModel = new RecordDataModel();
-            recordDataModel.setFileName(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)));
-            recordDataModel.setFileDuration(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
-            recordDataModel.setFileId(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media._ID)));
-            recordDataModel.setFilePath(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.DATA)));
-            recordDataModel.setFileSize(getFileSize(mCursor.getString(mCursor.getColumnIndex(MediaStore.Audio.Media.SIZE))));
-            recordDataModel.setSelected(false);
-
-            audioFileList.add(recordDataModel);
-
+        File file = new File(Environment.getExternalStorageDirectory()+"/SmartRecorder");
+/*
+        if(file.listFiles().length>0) {
+            for(File data : file.listFiles()){
+                Log.d(TAG,"name: "+ data.getName());
+            }
         }
+*/
+        List<String> filelist = new ArrayList<String>();
+
+        try{
+            String[] temp = file.list();
+
+
+            Collections.addAll(filelist, temp);
+            Iterator iter = filelist.iterator();
+            while(iter.hasNext()) {
+                String recordedFile = (String)iter.next();
+                Log.d(TAG, recordedFile);
+                RecordDataModel audioDataModel = new RecordDataModel();
+                audioDataModel.setFileName(recordedFile);
+                audioFileList.add(audioDataModel);
+            }
+            /*
+            ArrayAdapter<String> adapter =
+                    new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,filelist);
+            lv.setAdapter(adapter);
+            */
+        }catch(Exception ex){
+
+            ex.printStackTrace();
+        }
+
 
         // if audio data found than visible the list view
         if (audioFileList.size() > 0) {

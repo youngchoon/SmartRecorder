@@ -185,7 +185,7 @@ public class RecordFileListAdapter extends BaseAdapter {
             }
         });
 
-        convertView.setId(Integer.valueOf(audioFileModel.getFileId()));
+        //convertView.setId(Integer.valueOf(audioFileModel.getFileId()));
 
         return convertView;
     }
