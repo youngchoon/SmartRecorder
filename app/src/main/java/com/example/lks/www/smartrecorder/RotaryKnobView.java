@@ -69,20 +69,27 @@ public class RotaryKnobView extends ImageView {
                 float x = event.getX(0);
                 float y = event.getY(0);
                 float theta = getTheta(x,y);
-                Log.d(TAG, "x is " + x + " y is " + y +" theta is " + theta);
 
                 switch(event.getAction() & MotionEvent.ACTION_MASK)
                 {
                     case MotionEvent.ACTION_POINTER_DOWN:
-                        theta_old = theta;
+                        Log.d(TAG, "ACTION_POINTER_DOWN");
+                        //theta_old = theta;
+                        theta_old = getTheta(x, y);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         invalidate();
                         float delta_theta = theta - theta_old;
                         theta_old = theta;
                         int direction = (delta_theta > 0) ? 1 : -1;
-                        angle += 3*direction;
+                        angle = theta_old + 90;
+                        //angle += 3*direction;
                         notifyListener(direction);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        Log.d(TAG, "ACTION_UP");
+                        angle = 0;
+                        Log.d(TAG, "x is " + x + " y is " + y +" theta is " + theta);
                         break;
                 }
                 return true;

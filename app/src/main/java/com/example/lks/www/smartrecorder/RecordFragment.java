@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             MediaRecorder.OutputFormat.THREE_GPP };
 
     private RotaryKnobView jogView;
+    private static final String TAG = " RecordFragment";
     Intent recordServiceIntent;
 
     @Override
@@ -41,9 +43,9 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             public void onKnobChanged(int arg)
             {
                 if (arg > 0)
-                    ;     // rotate right
+                    ;//Log.d(TAG, "moving right");     // rotate right
                 else
-                    ;     // rotate left
+                    ;//Log.d(TAG, "moving left");     // rotate left
             }
         });
 
