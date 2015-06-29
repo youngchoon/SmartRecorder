@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.util.Log;
+import android.widget.TextView;
 
 /**
  * Created by Heesan on 2015-04-27.
@@ -16,6 +17,7 @@ public class RotaryKnobView extends ImageView {
     private float theta_old = 0f;
     private RotaryKnobListener listener;
     private static final String TAG = " MyActivity";
+    private TextView timerCnt;
 
     public interface RotaryKnobListener {
         public void onKnobChanged(int arg);
@@ -62,6 +64,8 @@ public class RotaryKnobView extends ImageView {
     public void initialize()
     {
         this.setImageResource(R.drawable.jogview);
+
+        timerCnt = (TextView)this.findViewById(R.id.timer);
         setOnTouchListener(new OnTouchListener()
         {
             @Override
@@ -84,7 +88,8 @@ public class RotaryKnobView extends ImageView {
                         int direction = (delta_theta > 0) ? 1 : -1;
                         angle = theta_old + 90;
                         //angle += 3*direction;
-                        notifyListener(direction);
+                        //notifyListener(direction);
+                        timerCnt.setText(String.valueOf(angle));
                         break;
                     case MotionEvent.ACTION_UP:
                         Log.d(TAG, "ACTION_UP");
