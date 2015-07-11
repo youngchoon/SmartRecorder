@@ -92,12 +92,14 @@ public class RotaryKnobView extends ImageView {
                         angle = theta_old + 90;
                         //angle += 3*direction;
                         //notifyListener(direction);
-                        timerCnt.setText(String.valueOf(angle));
+                        timerCnt.setText(String.valueOf(angle%360));
                         break;
                     case MotionEvent.ACTION_UP:
                         Log.d(TAG, "ACTION_UP");
                         angle = 0;
                         Log.d(TAG, "x is " + x + " y is " + y + " theta is " + theta);
+                        timerCnt.setText("0");
+                        invalidate();
                         break;
                 }
                 return true;
