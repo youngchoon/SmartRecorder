@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -38,6 +38,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
         View v = inflater.inflate((R.layout.record), container, false);
         jogView = (RotaryKnobView)v.findViewById(R.id.jogview);
+        TextView timerCnt = (TextView)v.findViewById(R.id.timer);
         jogView.setKnobListener(new RotaryKnobView.RotaryKnobListener()
         {
             public void onKnobChanged(int arg)
@@ -47,7 +48,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 else
                     ;//Log.d(TAG, "moving left");     // rotate left
             }
-        });
+        }, timerCnt);
 
         /*
         Button service_start = (Button)findViewById(R.id.service_start);
@@ -184,4 +185,6 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
             return rootView;
         }
     }
+
+
 }

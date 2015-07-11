@@ -3,10 +3,11 @@ package com.example.lks.www.smartrecorder;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.util.Log;
 import android.widget.TextView;
 
 /**
@@ -18,14 +19,16 @@ public class RotaryKnobView extends ImageView {
     private RotaryKnobListener listener;
     private static final String TAG = " MyActivity";
     private TextView timerCnt;
+    private Context mContext;
 
     public interface RotaryKnobListener {
         public void onKnobChanged(int arg);
     }
 
-    public void setKnobListener(RotaryKnobListener l )
+    public void setKnobListener(RotaryKnobListener l,  TextView timerCnt)
     {
         listener = l;
+        this.timerCnt = timerCnt;
     }
 
     public RotaryKnobView(Context context) {
@@ -36,6 +39,7 @@ public class RotaryKnobView extends ImageView {
     public RotaryKnobView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        mContext = context;
         initialize();
     }
 
@@ -64,8 +68,7 @@ public class RotaryKnobView extends ImageView {
     public void initialize()
     {
         this.setImageResource(R.drawable.jogview);
-
-        timerCnt = (TextView)this.findViewById(R.id.timer);
+        ViewGroup parentView = (ViewGroup)this.getParent();
         setOnTouchListener(new OnTouchListener()
         {
             @Override
@@ -94,7 +97,7 @@ public class RotaryKnobView extends ImageView {
                     case MotionEvent.ACTION_UP:
                         Log.d(TAG, "ACTION_UP");
                         angle = 0;
-                        Log.d(TAG, "x is " + x + " y is " + y +" theta is " + theta);
+                        Log.d(TAG, "x is " + x + " y is " + y + " theta is " + theta);
                         break;
                 }
                 return true;
