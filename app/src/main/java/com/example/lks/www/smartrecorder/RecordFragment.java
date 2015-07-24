@@ -38,7 +38,8 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
         View v = inflater.inflate((R.layout.record), container, false);
         jogView = (RotaryKnobView)v.findViewById(R.id.jogview);
-        TextView timerCnt = (TextView)v.findViewById(R.id.timer);
+        TextView recordTimeView = (TextView)v.findViewById(R.id.recordTime);
+        TextView maxTimeView = (TextView)v.findViewById(R.id.maxTime);
         jogView.setKnobListener(new RotaryKnobView.RotaryKnobListener()
         {
             public void onKnobChanged(int arg)
@@ -48,7 +49,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
                 else
                     ;//Log.d(TAG, "moving left");     // rotate left
             }
-        }, timerCnt);
+        }, recordTimeView, maxTimeView);
 
         /*
         Button service_start = (Button)findViewById(R.id.service_start);

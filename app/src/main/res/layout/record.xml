@@ -20,6 +20,22 @@
         android:layout_weight="0.8"
         android:scaleType="fitCenter"/>
 -->
+    <TextView
+        android:id="@+id/maxtimeString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center"
+        android:text="Max Record Time"
+        android:textSize="20dip"/>
+
+    <TextView
+        android:id="@+id/maxTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center"
+        android:textSize="20dip"/>
 
     <com.example.lks.www.smartrecorder.RotaryKnobView
         android:id="@+id/jogview"
@@ -28,7 +44,7 @@
         android:layout_gravity="center"/>
 
     <TextView
-        android:id="@+id/timer"
+        android:id="@+id/recordTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"

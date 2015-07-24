@@ -20,7 +20,8 @@ public class RotaryKnobView extends ImageView {
     private float theta_old = 0f;
     private RotaryKnobListener listener;
     private static final String TAG = " MyActivity";
-    private TextView timerCnt;
+    private TextView recordTimeView;
+    private TextView maxTimeView;
     private Context mContext;
     private byte cycleCnt = 0;
     private float previousAngle = 0f;
@@ -30,10 +31,11 @@ public class RotaryKnobView extends ImageView {
         public void onKnobChanged(int arg);
     }
 
-    public void setKnobListener(RotaryKnobListener l,  TextView timerCnt)
+    public void setKnobListener(RotaryKnobListener l,  TextView recordTimeView, TextView maxtimeView)
     {
         listener = l;
-        this.timerCnt = timerCnt;
+        this.recordTimeView = recordTimeView;
+        this.maxTimeView = maxtimeView;
     }
 
     public RotaryKnobView(Context context) {
@@ -118,18 +120,20 @@ public class RotaryKnobView extends ImageView {
                         Log.v(TAG, "maxTimeInSecond =" + maxTime + " RecordTimeInSecond =" + RecordTimeInSecond + " angle = " + angle);
                         //Log.v(TAG, "timePerAngle =" + SecondPerAngle +" RecordTimeInSecond =" + RecordTimeInSecond);
 
-                        int hours = (int) RecordTimeInSecond/3600;
-                        int minutes = (int) (RecordTimeInSecond - hours*3600) / 60;
-                        int seconds = (int) ((RecordTimeInSecond - hours*3600) % 60) / 10 * 10;
-                        timerCnt.setText(String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+                        recordTimeView.setText(timeFormat(RecordTimeInSecond));
                         break;
 
                     case MotionEvent.ACTION_UP:
                         angle = 0;
                         cycleCnt = 0;
                         previousAngle = 0f;
-                        timerCnt.setText("00:00:00");
+                        recordTimeView.setText("00:00:00");
+                        invalidate();
+                        break;
+
+                    case MotionEvent.ACTION_DOWN:
                         maxTime = (int) getTotalBufferTime(); //Temp_code
+                        maxTimeView.setText(timeFormat(maxTime));
                         invalidate();
                         break;
                 }
@@ -144,6 +148,15 @@ public class RotaryKnobView extends ImageView {
         int maxTime = new Random().nextInt(18000);
         //Log.v(TAG, "randomSeed =" + randomSeed + " totalBuffertime[randomSeed] = " + totalBuffertime[randomSeed]);
         return maxTime;
+    }
+
+    private CharSequence timeFormat(float timeInSeconds)
+    {
+        int hours = (int) timeInSeconds/3600;
+        int minutes = (int) (timeInSeconds - hours*3600) / 60;
+        int seconds = (int) ((timeInSeconds - hours*3600) % 60) / 10 * 10;
+
+        return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
     }
 
     private void notifyListener(int arg)
