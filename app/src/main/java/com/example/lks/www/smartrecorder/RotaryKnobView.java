@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Random;
+
 /**
  * Created by Heesan on 2015-04-27.
  */
@@ -20,6 +22,9 @@ public class RotaryKnobView extends ImageView {
     private static final String TAG = " MyActivity";
     private TextView timerCnt;
     private Context mContext;
+    private byte cycleCnt = 0;
+    private float previousAngle = 0f;
+    private int maxTime = 3600;
 
     public interface RotaryKnobListener {
         public void onKnobChanged(int arg);
@@ -80,7 +85,6 @@ public class RotaryKnobView extends ImageView {
                 switch(event.getAction() & MotionEvent.ACTION_MASK)
                 {
                     case MotionEvent.ACTION_POINTER_DOWN:
-                        Log.d(TAG, "ACTION_POINTER_DOWN");
                         //theta_old = theta;
                         theta_old = getTheta(x, y);
                         break;
@@ -89,22 +93,57 @@ public class RotaryKnobView extends ImageView {
                         float delta_theta = theta - theta_old;
                         theta_old = theta;
                         int direction = (delta_theta > 0) ? 1 : -1;
-                        angle = theta_old + 90;
-                        //angle += 3*direction;
-                        //notifyListener(direction);
-                        timerCnt.setText(String.valueOf(angle%360));
+                        angle = (theta_old + 90)%360;
+
+                        if(previousAngle > 340 && previousAngle < 360 && angle > 0 && angle < 20 ) {
+                            cycleCnt++;
+                            if(cycleCnt > 1)
+                                cycleCnt =1;
+                        }
+                        if(previousAngle >= 0 && previousAngle < 20 && angle <360 && angle > 340 ) {
+                            cycleCnt--;
+                            if(cycleCnt < - 1)
+                                cycleCnt = -1;
+                        }
+                        //Log.v(TAG, "cycleCnt=" + cycleCnt + " previousAngle=" + previousAngle + " Angle=" + angle);
+                        previousAngle = angle;
+
+                        if (cycleCnt ==1)
+                            angle = 360;
+                        else if (cycleCnt == -1)
+                            angle = 0;
+
+                        float SecondPerAngle = (float) maxTime / 360;
+                        float RecordTimeInSecond = SecondPerAngle * angle;
+                        Log.v(TAG, "maxTimeInSecond =" + maxTime + " RecordTimeInSecond =" + RecordTimeInSecond + " angle = " + angle);
+                        //Log.v(TAG, "timePerAngle =" + SecondPerAngle +" RecordTimeInSecond =" + RecordTimeInSecond);
+
+                        int hours = (int) RecordTimeInSecond/3600;
+                        int minutes = (int) (RecordTimeInSecond - hours*3600) / 60;
+                        int seconds = (int) ((RecordTimeInSecond - hours*3600) % 60) / 10 * 10;
+                        timerCnt.setText(String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
                         break;
+
                     case MotionEvent.ACTION_UP:
-                        Log.d(TAG, "ACTION_UP");
                         angle = 0;
-                        Log.d(TAG, "x is " + x + " y is " + y + " theta is " + theta);
-                        timerCnt.setText("0");
+                        cycleCnt = 0;
+                        previousAngle = 0f;
+                        timerCnt.setText("00:00:00");
+                        maxTime = (int) getTotalBufferTime(); //Temp_code
                         invalidate();
                         break;
                 }
                 return true;
             }
         });
+    }
+
+    //Temp_function
+    public int getTotalBufferTime()
+    {
+        int maxTime = new Random().nextInt(18000);
+        //Log.v(TAG, "randomSeed =" + randomSeed + " totalBuffertime[randomSeed] = " + totalBuffertime[randomSeed]);
+        return maxTime;
     }
 
     private void notifyListener(int arg)
