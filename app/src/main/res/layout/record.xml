@@ -3,15 +3,18 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="20dip">
+    android:padding="20dip"
+    android:textColor="#CCCCCC"
+    android:background="@drawable/backgorund_1">
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/format_info"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:textSize="20dip"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:textColor="#CCCCCC"/>
 
     <TextView
         android:id="@+id/maxtimeString"
@@ -19,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Max Record Time"
-        android:textSize="24dip"/>
+        android:textSize="20dip"
+        android:textColor="#CCCCCC"/>
 
     <TextView
         android:id="@+id/maxTime"
@@ -28,7 +32,9 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="01:00:00"
-        android:textSize="24dip"/>
+        android:textSize="20dip"
+        android:textColor="#CCCCCC"
+        android:paddingBottom="30dip"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
@@ -48,7 +54,8 @@
             android:layout_height="300dp"
             android:gravity="center"
             android:text="00:00:00"
-            android:textSize="36dip"/>
+            android:textSize="36dip"
+            android:textColor="#CCCCCC"/>
     </RelativeLayout>
 
     <LinearLayout
