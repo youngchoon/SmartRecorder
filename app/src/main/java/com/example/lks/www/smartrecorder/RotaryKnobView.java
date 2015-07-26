@@ -2,6 +2,7 @@ package com.example.lks.www.smartrecorder;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,6 +27,8 @@ public class RotaryKnobView extends ImageView {
     private byte cycleCnt = 0;
     private float previousAngle = 0f;
     private int maxTime = 3600;
+    private Vibrator vibrator;
+    private byte vibratorSkip = 0;
 
     public interface RotaryKnobListener {
         public void onKnobChanged(int arg);
@@ -36,6 +39,7 @@ public class RotaryKnobView extends ImageView {
         listener = l;
         this.recordTimeView = recordTimeView;
         this.maxTimeView = maxtimeView;
+        vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     public RotaryKnobView(Context context) {
@@ -108,12 +112,17 @@ public class RotaryKnobView extends ImageView {
                                 cycleCnt = -1;
                         }
                         //Log.v(TAG, "cycleCnt=" + cycleCnt + " previousAngle=" + previousAngle + " Angle=" + angle);
+                        //if(previousAngle - angle >= -6 | previousAngle - angle >= 6 )
+
                         previousAngle = angle;
 
                         if (cycleCnt ==1)
                             angle = 360;
                         else if (cycleCnt == -1)
                             angle = 0;
+                        else
+                            if(vibratorSkip++ % 3 == 0) //need to be optimized
+                                vibrator.vibrate(20);
 
                         float SecondPerAngle = (float) maxTime / 360;
                         float RecordTimeInSecond = SecondPerAngle * angle;
@@ -121,6 +130,7 @@ public class RotaryKnobView extends ImageView {
                         //Log.v(TAG, "timePerAngle =" + SecondPerAngle +" RecordTimeInSecond =" + RecordTimeInSecond);
 
                         recordTimeView.setText(timeFormat(RecordTimeInSecond));
+
                         break;
 
                     case MotionEvent.ACTION_UP:
@@ -128,12 +138,13 @@ public class RotaryKnobView extends ImageView {
                         cycleCnt = 0;
                         previousAngle = 0f;
                         recordTimeView.setText("00:00:00");
+                        maxTime = (int) getTotalBufferTime(); //Temp_code
+                        maxTimeView.setText(timeFormat(maxTime));//temp_location
+                        //TODO function : send RecordTimeInSecond
                         invalidate();
                         break;
 
                     case MotionEvent.ACTION_DOWN:
-                        maxTime = (int) getTotalBufferTime(); //Temp_code
-                        maxTimeView.setText(timeFormat(maxTime));
                         invalidate();
                         break;
                 }
