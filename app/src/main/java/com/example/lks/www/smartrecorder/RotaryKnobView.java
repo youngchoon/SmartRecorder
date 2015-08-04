@@ -30,6 +30,7 @@ public class RotaryKnobView extends ImageView {
     private int maxTime = 3600;
     private Vibrator vibrator;
     private byte vibratorSkip = 0;
+    private int RecordTimeInSecond = 0;
 
     public interface RotaryKnobListener {
         public void onKnobChanged(int arg);
@@ -126,7 +127,8 @@ public class RotaryKnobView extends ImageView {
                                 vibrator.vibrate(20);
 
                         float SecondPerAngle = (float) maxTime / 360;
-                        float RecordTimeInSecond = SecondPerAngle * angle;
+                        RecordTimeInSecond = Math.round(SecondPerAngle * angle);
+                        RecordTimeInSecond = (RecordTimeInSecond / 10) * 10;
                         Log.v(TAG, "maxTimeInSecond =" + maxTime + " RecordTimeInSecond =" + RecordTimeInSecond + " angle = " + angle);
                         //Log.v(TAG, "timePerAngle =" + SecondPerAngle +" RecordTimeInSecond =" + RecordTimeInSecond);
 
@@ -138,11 +140,13 @@ public class RotaryKnobView extends ImageView {
                         angle = 0;
                         cycleCnt = 0;
                         previousAngle = 0f;
-                        recordTimeView.setText("00:00:00");
                         maxTime = (int) getTotalBufferTime(); //Temp_code
                         maxTimeView.setText(timeFormat(maxTime));//temp_location
                         //TODO function : send RecordTimeInSecond
-                        getContext().startActivity(new Intent(getContext(), SaveFileActivity.class));
+                        Intent intent = new Intent(getContext(), SaveFileActivity.class);
+                        intent.putExtra("recordTime", RecordTimeInSecond);
+                        getContext().startActivity(intent);
+                        recordTimeView.setText("00:00:00");
                         invalidate();
                         break;
 
@@ -163,7 +167,7 @@ public class RotaryKnobView extends ImageView {
         return maxTime;
     }
 
-    private CharSequence timeFormat(float timeInSeconds)
+    private String timeFormat(int timeInSeconds)
     {
         int hours = (int) timeInSeconds/3600;
         int minutes = (int) (timeInSeconds - hours*3600) / 60;

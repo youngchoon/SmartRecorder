@@ -23,11 +23,11 @@
             android:id="@+id/edit_filename"
             android:layout_width="240dip"
             android:layout_height="35dip"
-            android:hint="Record_0001"
+            android:text="2015.08.04_14:25-04:22"
             android:layout_marginTop="40dip"
             android:layout_marginLeft="5dip"
             android:textSize="13sp"
-            android:textColor="#CCCCCC"/>
+            android:textColor="#333333"/>
 
         <Button
             android:id="@+id/btn_cancel"
