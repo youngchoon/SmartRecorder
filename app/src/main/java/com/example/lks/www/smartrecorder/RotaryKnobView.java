@@ -1,6 +1,7 @@
 package com.example.lks.www.smartrecorder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Vibrator;
 import android.util.AttributeSet;
@@ -141,6 +142,7 @@ public class RotaryKnobView extends ImageView {
                         maxTime = (int) getTotalBufferTime(); //Temp_code
                         maxTimeView.setText(timeFormat(maxTime));//temp_location
                         //TODO function : send RecordTimeInSecond
+                        getContext().startActivity(new Intent(getContext(), SaveFileActivity.class));
                         invalidate();
                         break;
 

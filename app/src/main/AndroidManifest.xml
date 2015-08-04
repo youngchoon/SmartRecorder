@@ -46,6 +46,12 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+
+        <activity
+            android:name=".SaveFileActivity"
+            android:label="Save as file"
+            android:theme='@android:style/Theme.Dialog' >
+        </activity>
     </application>
 
 </manifest>
